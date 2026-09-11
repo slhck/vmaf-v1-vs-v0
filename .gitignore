@@ -1,0 +1,10 @@
+# large inputs and outputs, see README for how to recreate them
+src/
+pvs/
+results/
+bin/
+tmp/
+analysis/frames*.parquet
+*.log
+test_*
+scripts/chain.sh
