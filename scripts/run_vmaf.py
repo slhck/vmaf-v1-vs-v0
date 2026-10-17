@@ -8,14 +8,18 @@
 
 Usage: run_vmaf.py <pvs_dir> [parallel] [vmaf_threads]
 Output: results/<config>/<pvs_stem>.json (skipped if present and valid).
+
+Environment variables (optional):
+  SRC_DIR      directory with the .y4m sources (default: src/)
+  RESULTS_DIR  output directory (default: results/)
 """
 import json, os, shutil, subprocess, sys, time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parent.parent
-SRC = BASE / "src"
-RES = BASE / "results"
+SRC = Path(os.environ.get("SRC_DIR", BASE / "src")).resolve()
+RES = Path(os.environ.get("RESULTS_DIR", BASE / "results")).resolve()
 FF = BASE / "bin/ffmpeg-master-latest-linux64-gpl/bin/ffmpeg"
 # Scoring tool. Default: fetch from PyPI via uvx. To use a local checkout instead,
 # set FQM_CHECKOUT=<checkout path> (expects <checkout>/.venv/bin/ffmpeg-quality-metrics).

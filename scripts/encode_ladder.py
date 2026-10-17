@@ -8,15 +8,17 @@
 
 For each source: 4 resolutions x {x264, x265, vp9, svt-av1} x CRF ladder.
 Native bit depth is preserved (8-bit sources -> yuv420p, 10-bit -> yuv420p10le).
+
+Usage: encode_ladder.py [src_dir] [out_dir]   (defaults: src/ and pvs/)
 """
 import json, os, subprocess, sys, time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parent.parent
-SRC = BASE / "src"
-OUT = BASE / "pvs"
-OUT.mkdir(exist_ok=True)
+SRC = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else BASE / "src"
+OUT = Path(sys.argv[2]).resolve() if len(sys.argv) > 2 else BASE / "pvs"
+OUT.mkdir(parents=True, exist_ok=True)
 FFMPEG = "ffmpeg"  # system ffmpeg 7.1 (encoders)
 THREADS_PER_JOB = 4
 PARALLEL = 8

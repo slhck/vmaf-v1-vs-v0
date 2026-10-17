@@ -10,15 +10,19 @@
 """Collect all harness JSON outputs into two tables:
   analysis/overall.parquet/.csv  - one row per (config, pvs): mean/median/min/max VMAF + all global feature stats + bitrate
   analysis/frames.parquet         - one row per (config, pvs, frame): vmaf + every feature (long-ish, wide columns)
+
+Environment variables (optional): RESULTS_DIR (default results/), PVS_DIR (default pvs/),
+ANALYSIS_DIR (default analysis/).
 """
-import json, re, subprocess
+import json, os, re, subprocess
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 import pandas as pd
 
 BASE = Path(__file__).resolve().parent.parent
-RES = BASE / "results"
-AN = BASE / "analysis"; AN.mkdir(exist_ok=True)
+RES = Path(os.environ.get("RESULTS_DIR", BASE / "results")).resolve()
+PVS = Path(os.environ.get("PVS_DIR", BASE / "pvs")).resolve()
+AN = Path(os.environ.get("ANALYSIS_DIR", BASE / "analysis")).resolve(); AN.mkdir(parents=True, exist_ok=True)
 
 
 def parse_name(stem):
@@ -64,8 +68,8 @@ frames = pd.concat([f for _, f in out], ignore_index=True)
 # bitrate/probe info per PVS
 pvs_paths = {}
 for stem in overall.pvs.unique():
-    if (BASE / "pvs" / f"{stem}.mkv").exists():
-        pvs_paths[stem] = BASE / "pvs" / f"{stem}.mkv"
+    if (PVS / f"{stem}.mkv").exists():
+        pvs_paths[stem] = PVS / f"{stem}.mkv"
 with ThreadPoolExecutor(16) as ex:
     info = dict(zip(pvs_paths, ex.map(probe, pvs_paths.values())))
 info = pd.DataFrame.from_dict(info, orient="index").rename_axis("pvs").reset_index()

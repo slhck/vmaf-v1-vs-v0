@@ -44,6 +44,8 @@ The `.y4m` files must be directly inside `src/`, not in another `a2_2k/` subdire
 
 The command should report `OK` for all 22 files.
 
+The sources (about 12 GB) are only read by `scripts/encode_ladder.py` and `scripts/run_vmaf.py`. Once the encodes and VMAF scores exist, you can delete the `.y4m` files and download them again with the commands above when needed.
+
 Download and unpack the latest BtbN static ffmpeg build. The scoring script expects its ffmpeg executable at `bin/ffmpeg-master-latest-linux64-gpl/bin/ffmpeg`, so keep the directory name created by the archive:
 
 ```sh
