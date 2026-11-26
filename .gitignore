@@ -1,7 +1,7 @@
 # large inputs and outputs, see README for how to recreate them
 src/
-pvs/
-results/
+/pvs
+/results
 bin/
 tmp/
 analysis/frames*.parquet
